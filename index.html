@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowCare - Cek Kesehatan Kulit & Rekomendasi Skincare</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts Inter & Playfair Display -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fdf4f5',
+                            100: '#fbe8eb',
+                            200: '#f7d5db',
+                            300: '#f0b3be',
+                            400: '#e5879a',
+                            500: '#d75d77',
+                            600: '#c23d5a',
+                            700: '#a32d47',
+                            800: '#88293e',
+                            900: '#732637',
+                        },
+                        cream: '#FAF7F2'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(247, 213, 219, 0.5);
+        }
+        .custom-shadow {
+            box-shadow: 0 10px 30px -5px rgba(215, 93, 119, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-cream text-gray-800 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brand-200 selection:text-brand-900">
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-50 glass-card transition-all duration-300 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-2 cursor-pointer" onclick="switchTab('home')">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-400 to-brand-600 flex items-center justify-center text-white shadow-md">
+                        <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    </div>
+                    <span class="font-serif font-bold text-2xl text-gray-900 tracking-tight">Glow<span class="text-brand-600">Care</span></span>
+                </div>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex space-x-8">
+                    <button onclick="switchTab('home')" class="nav-link text-gray-700 hover:text-brand-600 font-medium transition-colors py-2 flex items-center gap-1.5">
+                        <i data-lucide="home" class="w-4 h-4"></i> Beranda
+                    </button>
+                    <button onclick="switchTab('check')" class="nav-link text-gray-700 hover:text-brand-600 font-medium transition-colors py-2 flex items-center gap-1.5">
+                        <i data-lucide="activity" class="w-4 h-4"></i> Cek Kulit AI
+                    </button>
+                    <button onclick="switchTab('products')" class="nav-link text-gray-700 hover:text-brand-600 font-medium transition-colors py-2 flex items-center gap-1.5">
+                        <i data-lucide="shopping-bag" class="w-4 h-4"></i> Produk Skincare
+                    </button>
+                    <button onclick="switchTab('tips')" class="nav-link text-gray-700 hover:text-brand-600 font-medium transition-colors py-2 flex items-center gap-1.5">
+                        <i data-lucide="book-open" class="w-4 h-4"></i> Edukasi Kulit
+                    </button>
+                </nav>
+
+                <!-- CTA Button Header -->
+                <div class="hidden md:flex">
+                    <button onclick="switchTab('check')" class="bg-brand-600 hover:bg-brand-700 text-white font-medium px-5 py-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2">
+                        <i data-lucide="stethoscope" class="w-4 h-4"></i> Cek Kulit Gratis
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="md:hidden text-gray-700 hover:text-brand-600 p-2">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Nav -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-brand-100 px-4 pt-2 pb-4 space-y-2 shadow-lg">
+            <button onclick="switchTab('home'); toggleMobileMenu();" class="w-full text-left py-2.5 px-3 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600 font-medium flex items-center gap-2">
+                <i data-lucide="home" class="w-5 h-5"></i> Beranda
+            </button>
+            <button onclick="switchTab('check'); toggleMobileMenu();" class="w-full text-left py-2.5 px-3 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600 font-medium flex items-center gap-2">
+                <i data-lucide="activity" class="w-5 h-5"></i> Cek Kulit AI
+            </button>
+            <button onclick="switchTab('products'); toggleMobileMenu();" class="w-full text-left py-2.5 px-3 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600 font-medium flex items-center gap-2">
+                <i data-lucide="shopping-bag" class="w-5 h-5"></i> Produk Skincare
+            </button>
+            <button onclick="switchTab('tips'); toggleMobileMenu();" class="w-full text-left py-2.5 px-3 rounded-lg text-gray-700 hover:bg-brand-50 hover:text-brand-600 font-medium flex items-center gap-2">
+                <i data-lucide="book-open" class="w-5 h-5"></i> Edukasi Kulit
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <!-- ================= PAGE 1: HOME ================= -->
+        <section id="page-home" class="page-content">
+            <!-- Hero Section -->
+            <div class="relative overflow-hidden py-12 md:py-20 lg:py-24">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <div class="space-y-6 text-center lg:text-left">
+                            <span class="inline-flex items-center gap-2 bg-brand-100 text-brand-700 px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide">
+                                <i data-lucide="sparkles" class="w-4 h-4"></i> Personalisasi Perawatan Kulit Anda
+                            </span>
+                            <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                                Temukan Skincare Tepat untuk <span class="italic text-brand-600">Kulit Impianmu</span>
+                            </h1>
+                            <p class="text-lg text-gray-600 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                                Bingung memilih skincare yang cocok? Lakukan tes kesehatan kulit pintar kami hanya dalam 2 menit dan dapatkan analisa jenis kulit serta rekomendasi produk personalized!
+                            </p>
+                            <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
+                                <button onclick="switchTab('check')" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-lg px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-3">
+                                    <i data-lucide="scan-line" class="w-5 h-5"></i> Mulai Cek Kulit Gratis
+                                </button>
+                                <button onclick="switchTab('products')" class="bg-white hover:bg-gray-50 text-gray-800 font-semibold text-lg px-8 py-4 rounded-full border border-gray-200 shadow-sm transition-all duration-300 flex items-center justify-center gap-2">
+                                    Lihat Katalog Produk
+                                </button>
+                            </div>
+                            
+                            <!-- Key Metrics -->
+                            <div class="grid grid-cols-3 gap-4 pt-8 border-t border-brand-200/60 max-w-lg mx-auto lg:mx-0">
+                                <div>
+                                    <p class="font-serif font-bold text-2xl md:text-3xl text-brand-600">98%</p>
+                                    <p class="text-xs text-gray-500 font-medium">Akurasi Analisa</p>
+                                </div>
+                                <div>
+                                    <p class="font-serif font-bold text-2xl md:text-3xl text-brand-600">50K+</p>
+                                    <p class="text-xs text-gray-500 font-medium">Pengguna Puas</p>
+                                </div>
+                                <div>
+                                    <p class="font-serif font-bold text-2xl md:text-3xl text-brand-600">100%</p>
+                                    <p class="text-xs text-gray-500 font-medium">Aman & Teruji BPOM</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hero Banner Graphic / Image -->
+                        <div class="relative flex justify-center">
+                            <div class="w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-brand-200 blur-3xl absolute -z-10 opacity-70"></div>
+                            <div class="glass-card p-6 rounded-3xl shadow-2xl relative w-full max-w-md border border-white">
+                                <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80" 
+                                     alt="Skincare routines" 
+                                     class="w-full h-80 object-cover rounded-2xl shadow-sm"
+                                     onerror="this.src='https://placehold.co/600x800/fbe8eb/732637?text=Skincare+GlowCare'">
+                                
+                                <!-- Floating Feature Badge -->
+                                <div class="absolute -bottom-5 -left-5 bg-white p-4 rounded-2xl shadow-xl flex items-center gap-3 border border-brand-100">
+                                    <div class="p-3 bg-brand-100 text-brand-600 rounded-xl">
+                                        <i data-lucide="shield-check" class="w-6 h-6"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-sm text-gray-800">Dermatology Approved</p>
+                                        <p class="text-xs text-gray-500">Formula Khusus Kulit Tropis</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Steps Section -->
+            <div class="py-16 bg-white border-y border-brand-100">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center max-w-2xl mx-auto mb-12">
+                        <h2 class="font-serif text-3xl md:text-4xl font-bold text-gray-900">3 Langkah Mudah Solusi Kulit Sehat</h2>
+                        <p class="text-gray-600 mt-2">Dapatkan rangkaian perawatan kulit yang disesuaikan hanya untuk Anda</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="bg-cream p-8 rounded-2xl border border-brand-100 text-center hover:shadow-lg transition-all duration-300">
+                            <div class="w-16 h-16 bg-brand-500 text-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-md text-xl font-bold">1</div>
+                            <h3 class="font-serif text-xl font-bold mb-3">Isi Kuesioner Kulit</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed">Jawab beberapa pertanyaan singkat mengenai keluhan, jenis kulit, dan gaya hidup Anda.</p>
+                        </div>
+                        <div class="bg-cream p-8 rounded-2xl border border-brand-100 text-center hover:shadow-lg transition-all duration-300">
+                            <div class="w-16 h-16 bg-brand-500 text-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-md text-xl font-bold">2</div>
+                            <h3 class="font-serif text-xl font-bold mb-3">Analisis Kesehatan AI</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed">Sistem cerdas kami mendiagnosis tipe kulit dan masalah utama yang perlu ditangani.</p>
+                        </div>
+                        <div class="bg-cream p-8 rounded-2xl border border-brand-100 text-center hover:shadow-lg transition-all duration-300">
+                            <div class="w-16 h-16 bg-brand-500 text-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-md text-xl font-bold">3</div>
+                            <h3 class="font-serif text-xl font-bold mb-3">Dapatkan Rekomendasi</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed">Terima rekomendasi kandungan aktif, tahapan pemakaian AM/PM, dan saran produk.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 2: SKIN CHECK & DIAGNOSTIC ================= -->
+        <section id="page-check" class="page-content hidden py-12">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <!-- QUESTIONNAIRE CONTAINER -->
+                <div id="quiz-container" class="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-brand-100">
+                    <!-- Progress Bar -->
+                    <div class="mb-8">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-brand-600">Diagnosa Kulit</span>
+                            <span id="quiz-progress-text" class="text-xs font-semibold text-gray-500">Langkah 1 dari 5</span>
+                        </div>
+                        <div class="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden">
+                            <div id="quiz-progress-bar" class="bg-brand-500 h-full w-1/5 transition-all duration-300"></div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Form Steps -->
+                    <form id="skinQuizForm" onsubmit="event.preventDefault();">
+                        
+                        <!-- STEP 1: Kondisi Kulit Setelah Cuci Muka -->
+                        <div class="quiz-step" data-step="1">
+                            <h2 class="font-serif text-2xl font-bold text-gray-900 mb-2">Bagaimana rasanya kulit wajah Anda 30 menit setelah dicuci (tanpa pelembab)?</h2>
+                            <p class="text-gray-500 text-sm mb-6">Pilih salah satu kondisi yang paling menggambarkan wajah Anda.</p>
+                            
+                            <div class="space-y-3">
+                                <label class="flex items-center p-4 border-2 border-gray-100 hover:border-brand-300 rounded-xl cursor-pointer transition-all">
+                                    <input type="radio" name="feel" value="dry" class="accent-brand-600 w-5 h-5" required>
+                                    <span class="ml-3 font-medium text-gray-800">Terasa tertarik, kaku, kasar, atau kadang bersisik.</span>
+                                </label>
+                                <label class="flex items-center p-4 border-2 border-gray-100 hover:border-brand-300 rounded-xl cursor-pointer transition-all">
+                                    <input type="radio" name="feel" value="oily" class="accent-brand-600 w-5 h-5">
+                                    <span class="ml-3 font-medium text-gray-800">Sangat berminyak dan berkilau di seluruh area wajah.</span>
+                                </label>
+                                <label class="flex items-center p-4 border-2 border-gray-100 hover:border-brand-300 rounded-xl cursor-pointer transition-all">
+                                    <input type="radio" name="feel" value="combination" class="accent-brand-600 w-5 h-5">
+                                    <span class="ml-3 font-medium text-gray-800">Berminyak di area T-Zone (Dahi & Hidung), tapi normal/kering di pipi.</span>
+                                </label>
+                                <label class="flex items-center p-4 border-2 border-gray-100 hover:border-brand-300 rounded-xl cursor-pointer transition-all">
+                                    <input type="radio" name="feel" value="normal" class="accent-brand-600 w-5 h-5">
+                                    <span class="ml-3 font-medium text-gray-800">Terasa lembab pas, kenyal, tidak terlalu kering maupun berminyak.</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- STEP 2: Masalah Utama Kulit -->
+                        <div class="quiz-step hidden" data-step="2">
+                            <h2 class="font-serif text-2xl font-bold text-gray-900 mb-2">Apa masalah atau keluhan kulit utama yang ingin diselesaikan?</h2>
+                            <p class="text-gray-500 text-sm mb-6">Pilih yang menjadi prioritas Anda saat ini.</p>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <label class="flex items-center p-4 border-2 border-gray-100 hover:border-brand-300 rounded-xl cursor-pointer transition-all">
+                                    <input type="radio" name="concern" value="acne" class="accent-brand-600 w-5 h-5" required>
+                                    <span class="ml-3 font-medium text-gray-800">Jerawat & Komedo</span>
+                                </label>
+                                <label class="flex items-center p-4 border-2 border-gray-100 hover:border-brand-300 rounded-xl cursor-pointer transition-all">
+                                    <input type="radio" name="concern" value="dull" class="accent-brand-600 w-5 h-5">
+                                    <span class="ml-3 font-medium text-gray-800">Kulit Kusam & Flek/Noda Hitam</span>
+                                </label>
+                                <label class="flex items-center p-4 border-2 border-gray-100 hover:border-brand-300 rounded-xl cursor-pointer transition-all">
+                                    <input type="radio" name="concern" value="aging" class="accent-brand-600 w-5 h-5">
+                                    <span class="ml-3 font-medium text-gray-800">Kerutan & Garis Halus (Aging)</span>
+                                </label>
+                                <label class="flex items-center p-4 border-2 border-gray-100 hover:border-brand-300 rounded-xl cursor-pointer transition-all">
+                                    <input type="radio" name="concern" value="dehydrated" class="accent-brand-600 w-5 h-5">
+                                    <span class="ml-3 font-medium text-gray-800">Kulit Kering & Barrier Rusak</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- STEP 3: Sensitivitas Kulit -->
+                        <div class="quiz-step hidden" data-step="3">
+                            <h2 class="font-serif text-2xl font-bold text-gray-900 mb-2">Seberapa sering kulit Anda mengalami kemerahan atau iritasi?</h2>
+                            <p class="text-gray-500 text-sm mb-6">Ini membantu mengukur tingkat sensitivitas kulit Anda.</p>
+                            
+                            <div class="space-y-3">
+                                <label class="flex items-center p-4 border-2 border-gray-100 hover:border-brand-300 rounded-xl cursor-pointer transition-all">
+                                    <input type="radio" name="sensitivity" value="high" class="accent-brand-600 w-5 h-5" required>
+                                    <span class="ml-3 font-medium text-gray-800">Sangat Sering (Mudah memerah, gatal, atau pedih saat coba produk baru)</span>
+                                </label>
+                                <label class="flex items-center p-4 border-2 border-gray-100 hover:border-brand-300 rounded-xl cursor-pointer transition-all">
+                                    <input type="radio" name="sensitivity" value="medium" class="accent-brand-600 w-5 h-5">
+                                    <span class="ml-3 font-medium text-gray-800">Kadang-kadang (Hanya memerah jika cuaca sangat panas atau terik)</span>
+                                </label>
+                                <label class="flex items-center p-4 border-2 border-gray-100 hover:border-brand-300 rounded-xl cursor-pointer transition-all">
+                                    <input type="radio" name="sensitivity" value="low" class="accent-brand-600 w-5 h-5">
+                                    <span class="ml-3 font-medium text-gray-800">Jarang / Tidak Pernah (Kulit tergolong 'badak' & fleksibel)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- STEP 4: Aktivitas Harian & Paparan Matahari -->
+                        <div class="quiz-step hidden" data-step="4">
+                            <h2 class="font-serif text-2xl font-bold text-gray-900 mb-2">Bagaimana intensitas kegiatan harian Anda?</h2>
+                            <p class="text-gray-500 text-sm mb-6">Pilih lokasi aktivitas terbanyak Anda sehari-hari.</p>
+                            
+                            <div class="space-y-3">
+                                <label class="flex items-center p-4 border-2 border-gray-100 hover:border-brand-300 rounded-xl cursor-pointer transition-all">
+                                    <input type="radio" name="lifestyle" value="indoor" class="accent-brand-600 w-5 h-5" required>
+                                    <span class="ml-3 font-medium text-gray-800">Dominan Indoor / Dalam Ruangan Ber-AC</span>
+                                </label>
+                                <label class="flex items-center p-4 border-2 border-gray-100 hover:border-brand-300 rounded-xl cursor-pointer transition-all">
+                                    <input type="radio" name="lifestyle" value="outdoor" class="accent-brand-600 w-5 h-5">
+                                    <span class="ml-3 font-medium text-gray-800">Dominan Outdoor / Terpapar Matahari & Polusi</span>
+                                </label>
+                                <label class="flex items-center p-4 border-2 border-gray-100 hover:border-brand-300 rounded-xl cursor-pointer transition-all">
+                                    <input type="radio" name="lifestyle" value="balanced" class="accent-brand-600 w-5 h-5">
+                                    <span class="ml-3 font-medium text-gray-800">Seimbang antara Indoor dan Outdoor</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- STEP 5: Pengalaman Pakai Skincare -->
+                        <div class="quiz-step hidden" data-step="5">
+                            <h2 class="font-serif text-2xl font-bold text-gray-900 mb-2">Seberapa mahir Anda dalam menggunakan tahapan skincare?</h2>
+                            <p class="text-gray-500 text-sm mb-6">Agar rekomendasi produk sesuai dengan kenyamanan rutinitas Anda.</p>
+                            
+                            <div class="space-y-3">
+                                <label class="flex items-center p-4 border-2 border-gray-100 hover:border-brand-300 rounded-xl cursor-pointer transition-all">
+                                    <input type="radio" name="experience" value="beginner" class="accent-brand-600 w-5 h-5" required>
+                                    <span class="ml-3 font-medium text-gray-800">Pemula (Ingin yang simpel: Cuci muka + Pelembab + Sunscreen)</span>
+                                </label>
+                                <label class="flex items-center p-4 border-2 border-gray-100 hover:border-brand-300 rounded-xl cursor-pointer transition-all">
+                                    <input type="radio" name="experience" value="intermediate" class="accent-brand-600 w-5 h-5">
+                                    <span class="ml-3 font-medium text-gray-800">Menengah (Bisa memakai Serum Tambahan & Exfoliating Toner)</span>
+                                </label>
+                                <label class="flex items-center p-4 border-2 border-gray-100 hover:border-brand-300 rounded-xl cursor-pointer transition-all">
+                                    <input type="radio" name="experience" value="advanced" class="accent-brand-600 w-5 h-5">
+                                    <span class="ml-3 font-medium text-gray-800">Lanjutan (Rutin Retinol, Double Cleansing, Masker, dll)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Navigation Buttons -->
+                        <div class="flex justify-between items-center mt-8 pt-6 border-t border-gray-100">
+                            <button type="button" id="prevBtn" onclick="nextPrevStep(-1)" class="px-5 py-2.5 rounded-full border border-gray-300 font-medium text-gray-600 hover:bg-gray-50 transition-colors hidden">
+                                <i data-lucide="arrow-left" class="w-4 h-4 inline mr-1"></i> Kembali
+                            </button>
+                            <div></div>
+                            <button type="button" id="nextBtn" onclick="nextPrevStep(1)" class="bg-brand-600 hover:bg-brand-700 text-white px-7 py-2.5 rounded-full font-medium shadow-md transition-all flex items-center gap-2">
+                                Lanjut <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- DIAGNOSTIC RESULT RESULT SECTION (HIDDEN INITIALLY) -->
+                <div id="result-container" class="hidden space-y-8">
+                    <!-- Summary Card -->
+                    <div class="bg-gradient-to-r from-brand-600 to-brand-800 text-white rounded-3xl p-8 shadow-xl relative overflow-hidden">
+                        <div class="relative z-10">
+                            <span class="bg-white/20 text-white text-xs px-3 py-1 rounded-full uppercase tracking-wider font-semibold">Hasil Diagnosa Kulit</span>
+                            <h2 id="res-skin-type" class="font-serif text-3xl sm:text-4xl font-bold mt-2 mb-3">Tipe Kulit: Berminyak & Berjerawat</h2>
+                            <p id="res-skin-desc" class="text-brand-100 text-base max-w-2xl leading-relaxed">
+                                Kulit Anda memproduksi sebum berlebih dengan potensi penyumbatan pori-pori. Perlu penanganan kandungan aktif pencegah bakteri jerawat tanpa merusak kelembaban alami.
+                            </p>
+                        </div>
+                        <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
+                    </div>
+
+                    <!-- Recommended Active Ingredients -->
+                    <div class="bg-white p-6 sm:p-8 rounded-3xl border border-brand-100 shadow-md">
+                        <h3 class="font-serif text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <i data-lucide="flask-conical" class="text-brand-600"></i> Kandungan Bahan Aktif Solusi Anda
+                        </h3>
+                        <div id="res-ingredients" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Routine Steps (Morning & Night) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- AM Routine -->
+                        <div class="bg-white p-6 rounded-3xl border border-brand-100 shadow-md">
+                            <div class="flex items-center gap-3 mb-4 text-amber-500">
+                                <i data-lucide="sun" class="w-6 h-6"></i>
+                                <h3 class="font-serif text-lg font-bold text-gray-900">Rutinitas Pagi (AM)</h3>
+                            </div>
+                            <ol id="res-am-routine" class="space-y-3 text-sm text-gray-700 list-decimal list-inside">
+                                <!-- Dynamic -->
+                            </ol>
+                        </div>
+
+                        <!-- PM Routine -->
+                        <div class="bg-white p-6 rounded-3xl border border-brand-100 shadow-md">
+                            <div class="flex items-center gap-3 mb-4 text-indigo-600">
+                                <i data-lucide="moon" class="w-6 h-6"></i>
+                                <h3 class="font-serif text-lg font-bold text-gray-900">Rutinitas Malam (PM)</h3>
+                            </div>
+                            <ol id="res-pm-routine" class="space-y-3 text-sm text-gray-700 list-decimal list-inside">
+                                <!-- Dynamic -->
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Recommended Product Catalog Based on Diagnostic -->
+                    <div class="bg-white p-6 sm:p-8 rounded-3xl border border-brand-100 shadow-md">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
+                            <div>
+                                <h3 class="font-serif text-xl font-bold text-gray-900">Rekomendasi Produk Cocok</h3>
+                                <p class="text-gray-500 text-sm">Dipilih khusus sesuai profil diagnosa kulit Anda</p>
+                            </div>
+                            <button onclick="resetQuiz()" class="mt-3 sm:mt-0 text-brand-600 font-medium text-sm hover:underline flex items-center gap-1">
+                                <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Tes Ulang
+                            </button>
+                        </div>
+
+                        <div id="res-products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Dynamic Product Cards -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= PAGE 3: PRODUCTS CATALOG ================= -->
+        <section id="page-products" class="page-content hidden py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-10">
+                    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-gray-900">Katalog Skincare Terpilih</h2>
+                    <p class="text-gray-600 mt-2">Diformulasikan dengan bahan aman, halal, dan telah tersertifikasi BPOM</p>
+                </div>
+
+                <!-- Filter Category Buttons -->
+                <div class="flex flex-wrap justify-center gap-2 mb-10">
+                    <button onclick="filterProducts('all')" class="prod-filter-btn px-4 py-2 rounded-full text-sm font-medium bg-brand-600 text-white shadow-sm">Semua</button>
+                    <button onclick="filterProducts('cleanser')" class="prod-filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-700 hover:bg-brand-50 border border-gray-200">Pembersih</button>
+                    <button onclick="filterProducts('serum')" class="prod-filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-700 hover:bg-brand-50 border border-gray-200">Serum & Ampoule</button>
+                    <button onclick="filterProducts('moisturizer')" class="prod-filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-700 hover:bg-brand-50 border border-gray-200">Pelembab</button>
+                    <button onclick="filterProducts('sunscreen')" class="prod-filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-700 hover:bg-brand-50 border border-gray-200">Sunscreen</button>
+                </div>
+
+                <!-- Products Grid -->
+                <div id="all-products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Javascript will render products here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 4: EDUCATION / TIPS ================= -->
+        <section id="page-tips" class="page-content hidden py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-gray-900">Edukasi & Tips Kulit Sehat</h2>
+                    <p class="text-gray-600 mt-2">Pahami mitos, fakta, dan panduan dasar merawat kesehatan kulit wajah</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Article 1 -->
+                    <div class="bg-white rounded-2xl overflow-hidden border border-brand-100 shadow-sm hover:shadow-md transition">
+                        <img src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80" alt="Skin barrier guide" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/600x400/fbe8eb/732637?text=Skin+Barrier'">
+                        <div class="p-6">
+                            <span class="text-xs font-semibold text-brand-600 uppercase tracking-wider">Perawatan Dasar</span>
+                            <h3 class="font-serif font-bold text-xl text-gray-900 mt-2 mb-3">Pentingnya Memperbaiki Skin Barrier yang Rusak</h3>
+                            <p class="text-gray-600 text-sm mb-4">Mengenali tanda-tanda skin barrier rusak seperti perih dan breakout serta bahan seperti Ceramide untuk memulihkannya.</p>
+                            <a href="#" onclick="alert('Artikel lengkap dapat dibaca pada blog edukasi resmi kami!'); return false;" class="text-brand-600 font-semibold text-sm inline-flex items-center gap-1 hover:underline">Baca Selengkapnya <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Article 2 -->
+                    <div class="bg-white rounded-2xl overflow-hidden border border-brand-100 shadow-sm hover:shadow-md transition">
+                        <img src="https://images.unsplash.com/photo-1556228722-d119320e45df?auto=format&fit=crop&w=600&q=80" alt="Sunscreen rules" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/600x400/fbe8eb/732637?text=Sunscreen+Guide'">
+                        <div class="p-6">
+                            <span class="text-xs font-semibold text-brand-600 uppercase tracking-wider">Perlindungan UV</span>
+                            <h3 class="font-serif font-bold text-xl text-gray-900 mt-2 mb-3">Aturan Pakai Sunscreen: Aturan 2 Jari & Re-apply</h3>
+                            <p class="text-gray-600 text-sm mb-4">Mengapa memakai sunscreen adalah investasi terbaik melawan penuaan dini dan flek hitam secara efektif.</p>
+                            <a href="#" onclick="alert('Artikel lengkap dapat dibaca pada blog edukasi resmi kami!'); return false;" class="text-brand-600 font-semibold text-sm inline-flex items-center gap-1 hover:underline">Baca Selengkapnya <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Article 3 -->
+                    <div class="bg-white rounded-2xl overflow-hidden border border-brand-100 shadow-sm hover:shadow-md transition">
+                        <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=600&q=80" alt="Active ingredients layering" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/600x400/fbe8eb/732637?text=Active+Ingredients'">
+                        <div class="p-6">
+                            <span class="text-xs font-semibold text-brand-600 uppercase tracking-wider">Panduan Bahan</span>
+                            <h3 class="font-serif font-bold text-xl text-gray-900 mt-2 mb-3">Jangan Layer Bahan Aktif Ini Secara Bersamaan!</h3>
+                            <p class="text-gray-600 text-sm mb-4">Kombinasi bahan skincare seperti Retinol & AHA/BHA yang berpotensi memicu iritasi jika dipakai bersamaan.</p>
+                            <a href="#" onclick="alert('Artikel lengkap dapat dibaca pada blog edukasi resmi kami!'); return false;" class="text-brand-600 font-semibold text-sm inline-flex items-center gap-1 hover:underline">Baca Selengkapnya <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 text-gray-300 mt-16 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center text-white">
+                            <i data-lucide="sparkles" class="w-4 h-4"></i>
+                        </div>
+                        <span class="font-serif font-bold text-xl text-white">Glow<span class="text-brand-400">Care</span></span>
+                    </div>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        Platform analisis kesehatan kulit pintar dan rekomendasi produk skincare personalisasi sesuai kebutuhan jenis kulit Anda.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Navigasi</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" onclick="switchTab('home')" class="hover:text-brand-300">Beranda</a></li>
+                        <li><a href="#" onclick="switchTab('check')" class="hover:text-brand-300">Cek Kulit AI</a></li>
+                        <li><a href="#" onclick="switchTab('products')" class="hover:text-brand-300">Katalog Produk</a></li>
+                        <li><a href="#" onclick="switchTab('tips')" class="hover:text-brand-300">Edukasi & Tips</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Layanan</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li>Konsultasi Virtual</li>
+                        <li>Analisis Formulasi</li>
+                        <li>Bantuan BPOM & Halal</li>
+                        <li>Kebijakan Privasi</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Kontak & Bantuan</h4>
+                    <p class="text-xs text-gray-400 mb-2">Punya pertanyaan seputar jenis kulit Anda?</p>
+                    <div class="flex items-center gap-2 text-brand-400 text-sm font-medium">
+                        <i data-lucide="mail" class="w-4 h-4"></i> halo@glowcare-skin.com
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-gray-800 text-center text-xs text-gray-500">
+                &copy; 2026 GlowCare Diagnostic. Semua Hak Cipta Dilindungi Undang-Undang.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Database Produk Skincare Kompleks
+        const productsDatabase = [
+            {
+                id: 'p1',
+                name: 'Gentle Hydrating Cleanser',
+                category: 'cleanser',
+                typeTarget: ['dry', 'sensitive', 'normal', 'dehydrated'],
+                concernTarget: ['dehydrated', 'dull', 'aging'],
+                price: 'Rp 89.000',
+                image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=400&q=80',
+                ingredients: ['Ceramide', 'Hyaluronic Acid', 'Amino Acid'],
+                description: 'Pembersih wajah lembut tanpa busa berlebih yang menjaga kelembaban dan memperkuat skin barrier.'
+            },
+            {
+                id: 'p2',
+                name: 'Salicylic Acid BHA Purifying Gel Cleanser',
+                category: 'cleanser',
+                typeTarget: ['oily', 'combination'],
+                concernTarget: ['acne'],
+                price: 'Rp 95.000',
+                image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=400&q=80',
+                ingredients: ['Salicylic Acid 2%', 'Tea Tree Oil', 'Zinc PCA'],
+                description: 'Pembersih khusus kulit berminyak & jerawat untuk membersihkan pori tersumbat dan kontrol minyak.'
+            },
+            {
+                id: 'p3',
+                name: '10% Niacinamide + Zinc Brightening Serum',
+                category: 'serum',
+                typeTarget: ['oily', 'combination', 'normal'],
+                concernTarget: ['dull', 'acne'],
+                price: 'Rp 129.000',
+                image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=400&q=80',
+                ingredients: ['Niacinamide 10%', 'Zinc PCA', 'Alpha Arbutin'],
+                description: 'Serum ampuh meratakan warna kulit, memudarkan bekas jerawat hitam (PIH), dan mengontrol sebum.'
+            },
+            {
+                id: 'p4',
+                name: 'Hyaluronic Acid Deep Hydration Serum',
+                category: 'serum',
+                typeTarget: ['dry', 'dehydrated', 'sensitive', 'normal'],
+                concernTarget: ['dehydrated', 'aging'],
+                price: 'Rp 135.000',
+                image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=400&q=80',
+                ingredients: ['7-Layer Hyaluronic Acid', 'Panthenol B5', 'Centella Asiatica'],
+                description: 'Memberikan hidrasi mendalam hingga lapisan kulit dalam dan menenangkan kulit kemerahan.'
+            },
+            {
+                id: 'p5',
+                name: 'Advanced Retinol 0.5% Anti-Aging Serum',
+                category: 'serum',
+                typeTarget: ['normal', 'combination', 'dry'],
+                concernTarget: ['aging', 'dull'],
+                price: 'Rp 169.000',
+                image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=400&q=80',
+                ingredients: ['Encapsulated Retinol', 'Peptides', 'Squalane'],
+                description: 'Menstimulasi regenerasi sel kulit, menyamarkan kerutan halus, dan mengencangkan tekstur wajah.'
+            },
+            {
+                id: 'p6',
+                name: 'Ceramide Barrier Repair Moisture Gel',
+                category: 'moisturizer',
+                typeTarget: ['dry', 'sensitive', 'combination', 'dehydrated', 'normal', 'oily'],
+                concernTarget: ['dehydrated', 'acne', 'dull', 'aging'],
+                price: 'Rp 115.000',
+                image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=400&q=80',
+                ingredients: ['5X Ceramide', 'Centella Asiatica', 'Hyaluronic Acid'],
+                description: 'Pelembab tekstur gel ringan yang dapat mengunci kelembaban 24 jam dan menguatkan benteng kulit.'
+            },
+            {
+                id: 'p7',
+                name: 'UV Watery Essence Sunscreen SPF 50+ PA++++',
+                category: 'sunscreen',
+                typeTarget: ['dry', 'normal', 'combination', 'oily', 'sensitive'],
+                concernTarget: ['dull', 'aging', 'acne', 'dehydrated'],
+                price: 'Rp 99.000',
+                image: 'https://images.unsplash.com/photo-1556228722-d119320e45df?auto=format&fit=crop&w=400&q=80',
+                ingredients: ['Broad Spectrum UV Filter', 'Cica Extract', 'Vitamin E'],
+                description: 'Tabir surya tekstur sangat ringan seperti air, tanpa whitecast dan ramah untuk kulit berjerawat.'
+            }
+        ];
+
+        let currentStep = 1;
+        const totalSteps = 5;
+
+        // Initialize Lucide Icons on DOM Load
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderAllProducts(productsDatabase);
+        });
+
+        // Navigation Tab Switching
+        function switchTab(tabId) {
+            document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
+            const target = document.getElementById(`page-${tabId}`);
+            if (target) {
+                target.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // Toggle Mobile Menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+        document.getElementById('mobileMenuBtn').addEventListener('click', toggleMobileMenu);
+
+        // Quiz Step Control
+        function updateStepUI() {
+            // Hide all steps
+            document.querySelectorAll('.quiz-step').forEach(step => step.classList.add('hidden'));
+            
+            // Show active step
+            const activeStepEl = document.querySelector(`.quiz-step[data-step="${currentStep}"]`);
+            if (activeStepEl) activeStepEl.classList.remove('hidden');
+
+            // Progress text and bar
+            document.getElementById('quiz-progress-text').innerText = `Langkah ${currentStep} dari ${totalSteps}`;
+            document.getElementById('quiz-progress-bar').style.width = `${(currentStep / totalSteps) * 100}%`;
+
+            // Buttons visibility
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            if (currentStep === 1) {
+                prevBtn.classList.add('hidden');
+            } else {
+                prevBtn.classList.remove('hidden');
+            }
+
+            if (currentStep === totalSteps) {
+                nextBtn.innerHTML = `Lihat Hasil Diagnosa <i data-lucide="sparkles" class="w-4 h-4 ml-1"></i>`;
+            } else {
+                nextBtn.innerHTML = `Lanjut <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>`;
+            }
+            lucide.createIcons();
+        }
+
+        function nextPrevStep(delta) {
+            const form = document.getElementById('skinQuizForm');
+
+            // If going forward, check if radio is selected for current step
+            if (delta === 1) {
+                const currentStepEl = document.querySelector(`.quiz-step[data-step="${currentStep}"]`);
+                const inputs = currentStepEl.querySelectorAll('input[type="radio"]');
+                let selected = false;
+                inputs.forEach(input => { if (input.checked) selected = true; });
+
+                if (!selected) {
+                    alert('Mohon pilih salah satu opsi jawaban sebelum melanjutkan!');
+                    return;
+                }
+            }
+
+            currentStep += delta;
+
+            if (currentStep > totalSteps) {
+                // Submit Form and Calculate Diagnostic
+                calculateDiagnostics();
+                return;
+            }
+
+            updateStepUI();
+        }
+
+        // Calculate Diagnostic Logic
+        function calculateDiagnostics() {
+            const form = document.getElementById('skinQuizForm');
+            const formData = new FormData(form);
+            
+            const feel = formData.get('feel'); // dry, oily, combination, normal
+            const concern = formData.get('concern'); // acne, dull, aging, dehydrated
+            const sensitivity = formData.get('sensitivity'); // high, medium, low
+            const lifestyle = formData.get('lifestyle'); // indoor, outdoor, balanced
+            const experience = formData.get('experience'); // beginner, intermediate, advanced
+
+            // Determine Full Tipe Kulit Title & Desc
+            let skinTypeTitle = "";
+            let skinTypeDesc = "";
+            let ingredients = [];
+            let amRoutine = [];
+            let pmRoutine = [];
+
+            // Primary Classification
+            if (feel === 'oily') {
+                skinTypeTitle = "Kulit Berminyak (Oily Skin)";
+                skinTypeDesc = "Kulit Anda memproduksi minyak/sebum alami berlebih secara konstan. Pori-pori cenderung tampak lebih besar dan berisiko tersumbat jika tidak dibersihkan dengan benar.";
+            } else if (feel === 'dry') {
+                skinTypeTitle = "Kulit Kering (Dry Skin)";
+                skinTypeDesc = "Kulit kekurangan kadar kelembaban dan minyak alami. Rentan terasa kaku, gatal, kasar, serta menunjukkan garis-garis halus lebih awal.";
+            } else if (feel === 'combination') {
+                skinTypeTitle = "Kulit Kombinasi (Combination Skin)";
+                skinTypeDesc = "Kadar produksi minyak tidak merata. Area T-Zone (dahi, hidung, dagu) cenderung berminyak, sedangkan area pipi cenderung normal atau kering.";
+            } else {
+                skinTypeTitle = "Kulit Normal & Seimbang";
+                skinTypeDesc = "Kondisi kulit Anda sangat seimbang, tidak terlalu berminyak maupun terlalu kering. Fokus utama adalah mempertahankan kesehatan skin barrier.";
+            }
+
+            // Adjust Description based on concern
+            if (concern === 'acne') {
+                skinTypeTitle += " & Rentan Berjerawat (Acne-Prone)";
+                skinTypeDesc += " Disertai kecenderungan timbul komedo dan peradangan jerawat akibat bakteri atau pori tersumbat.";
+            } else if (concern === 'dull') {
+                skinTypeTitle += " & Kusam";
+                skinTypeDesc += " Terlihat penumpukan sel kulit mati dan hiperpigmentasi yang mengurangi kecerahan alami wajah.";
+            } else if (concern === 'aging') {
+                skinTypeTitle += " & Penuaan Dini";
+                skinTypeDesc += " Menunjukkan gejala elastisitas berkurang serta flek hitam atau garis halus.";
+            }
+
+            // Recommended Active Ingredients Matrix
+            if (concern === 'acne' || feel === 'oily') {
+                ingredients.push(
+                    { name: 'Salicylic Acid (BHA)', desc: 'Penetrasi ke dalam pori-pori untuk membersihkan komedo dan memangkas minyak berlebih.' },
+                    { name: 'Niacinamide', desc: 'Meredakan peradangan jerawat, memudarkan noda hitam, dan mengontrol sebum.' },
+                    { name: 'Centella Asiatica', desc: 'Bahan herbal alami yang menenangkan kemerahan dan mempercepat penyembuhan kulit.' }
+                );
+            } else if (concern === 'dull') {
+                ingredients.push(
+                    { name: 'Vitamin C / Alpha Arbutin', desc: 'Antioksidan kuat untuk mencerahkan wajah dan menghambat produksi melanin.' },
+                    { name: 'Niacinamide 5-10%', desc: 'Meratakan warna kulit kusam dan memperbaiki tekstur permukaan wajah.' },
+                    { name: 'AHA (Glycolic Acid)', desc: 'Eksfoliasi permukaan sel kulit mati agar wajah nampak glowing segar.' }
+                );
+            } else if (feel === 'dry' || concern === 'dehydrated') {
+                ingredients.push(
+                    { name: '5X Ceramide', desc: 'Memperbaiki benteng pelindung kulit (skin barrier) yang rusak dan mencegah kehilangan air.' },
+                    { name: 'Hyaluronic Acid Multi-weight', desc: 'Penarik kelembaban air hingga ke lapisan terdalam epidermis.' },
+                    { name: 'Panthenol (Pro-Vitamin B5)', desc: 'Melembabkan secara intensif dan mengurangi rasa gatal/perih.' }
+                );
+            } else { // Aging / Normal
+                ingredients.push(
+                    { name: 'Encapsulated Retinol', desc: 'Standar emas merangsang produksi kolagen dan regenerasi sel kulit baru.' },
+                    { name: 'Peptides Complex', desc: 'Meningkatkan kekenyalan dan elastisitas jaringan kulit.' },
+                    { name: 'Ceramides & Squalane', desc: 'Mengunci nutrisi anti-aging agar kulit tetap lembab dan bervolume.' }
+                );
+            }
+
+            // Routine Recommendation Generation
+            amRoutine = [
+                "Cleanser: Cuci wajah dengan pembersih lembut ber-pH seimbang.",
+                "Toner / Essence (Opsional): Oleskan toner hidrasi untuk menyegarkan kulit.",
+                `Serum Target: Pakai serum kandungan ${ingredients[0]?.name || 'Niacinamide'} secukupnya.`,
+                "Moisturizer: Pakai pelembab tekstur gel/krim untuk mengunci hidrasi.",
+                "Sunscreen (Wajib): Gunakan sunscreen minimal SPF 30 PA+++ sebanyak 2 ruas jari."
+            ];
+
+            pmRoutine = [
+                "Double Cleansing: Gunakan Micellar Water/Cleansing Balm lalu dilanjutkan Facial Wash.",
+                "Toner Hydrating: Basuh wajah dengan hydrating toner.",
+                `Serum Perawatan: Aplikasikan serum dengan fokus masalah kulit (${ingredients[1]?.name || 'Active Serum'}).`,
+                "Night Moisturizer: Aplikasikan pelembab secara merata untuk nutrisi saat tidur semalaman."
+            ];
+
+            if (experience === 'advanced' && (concern === 'aging' || concern === 'dull')) {
+                pmRoutine.splice(2, 0, "Bahan Aktif Malam: Gunakan Retinol / Eksfoliasi AHA BHA (2-3 kali seminggu).");
+            }
+
+            // Show UI Updates
+            document.getElementById('res-skin-type').innerText = skinTypeTitle;
+            document.getElementById('res-skin-desc').innerText = skinTypeDesc;
+
+            // Render Ingredients
+            const ingrContainer = document.getElementById('res-ingredients');
+            ingrContainer.innerHTML = ingredients.map(ing => `
+                <div class="bg-brand-50/70 p-4 rounded-2xl border border-brand-200">
+                    <span class="font-bold text-brand-700 text-sm block mb-1">✨ ${ing.name}</span>
+                    <p class="text-xs text-gray-600 leading-relaxed">${ing.desc}</p>
+                </div>
+            `).join('');
+
+            // Render Routine Lists
+            document.getElementById('res-am-routine').innerHTML = amRoutine.map(step => `<li class="pl-1">${step}</li>`).join('');
+            document.getElementById('res-pm-routine').innerHTML = pmRoutine.map(step => `<li class="pl-1">${step}</li>`).join('');
+
+            // Filter & Render Suitable Recommended Products
+            const recommendedProds = productsDatabase.filter(prod => {
+                return prod.typeTarget.includes(feel) || prod.concernTarget.includes(concern);
+            }).slice(0, 3); // top 3 matching
+
+            const prodContainer = document.getElementById('res-products-grid');
+            prodContainer.innerHTML = recommendedProds.map(prod => createProductCardHTML(prod)).join('');
+
+            // Switch display views
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('result-container').classList.remove('hidden');
+            
+            // Re-trigger icon creation
+            lucide.createIcons();
+            window.scrollTo({ top: 100, behavior: 'smooth' });
+        }
+
+        // Reset Quiz to Start
+        function resetQuiz() {
+            currentStep = 1;
+            document.getElementById('skinQuizForm').reset();
+            document.getElementById('result-container').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
+            updateStepUI();
+        }
+
+        // Render Product Card HTML Helper
+        function createProductCardHTML(product) {
+            return `
+                <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+                    <div>
+                        <div class="relative overflow-hidden h-48 bg-gray-50">
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/400x400/fbe8eb/732637?text=${encodeURIComponent(product.name)}'">
+                            <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-brand-700 text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                                ${product.category}
+                            </span>
+                        </div>
+                        <div class="p-5">
+                            <h4 class="font-serif font-bold text-gray-900 text-lg mb-1 group-hover:text-brand-600 transition-colors">${product.name}</h4>
+                            <p class="text-xs text-gray-500 mb-3 line-clamp-2">${product.description}</p>
+                            
+                            <div class="flex flex-wrap gap-1 mb-4">
+                                ${product.ingredients.map(ing => `<span class="text-[10px] bg-brand-50 text-brand-700 px-2 py-0.5 rounded-md font-medium">${ing}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-5 pt-0 flex items-center justify-between border-t border-gray-50 mt-auto">
+                        <span class="font-bold text-gray-900 text-base">${product.price}</span>
+                        <button onclick="alert('Produk ${product.name} berhasil ditambahkan ke keranjang belanja Anda!')" class="bg-brand-600 hover:bg-brand-700 text-white p-2.5 rounded-xl shadow transition-colors">
+                            <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render All Products Catalog
+        function renderAllProducts(products) {
+            const container = document.getElementById('all-products-grid');
+            if (container) {
+                container.innerHTML = products.map(prod => createProductCardHTML(prod)).join('');
+                lucide.createIcons();
+            }
+        }
+
+        // Filter Products by Category
+        function filterProducts(category) {
+            // Update Active Filter Button
+            document.querySelectorAll('.prod-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-600', 'text-white');
+                btn.classList.add('bg-white', 'text-gray-700');
+            });
+            event.target.classList.remove('bg-white', 'text-gray-700');
+            event.target.classList.add('bg-brand-600', 'text-white');
+
+            if (category === 'all') {
+                renderAllProducts(productsDatabase);
+            } else {
+                const filtered = productsDatabase.filter(p => p.category === category);
+                renderAllProducts(filtered);
+            }
+        }
+    </script>
+</body>
+</html>
